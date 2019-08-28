@@ -74,24 +74,37 @@ namespace Excell
             excel.LoadWorkSheet(sheetNumber);
                        
            int emptyRowsCount = 0;
+           int rowsAddedCount = 0;
 
             for (int i = 2; i < excel.rowsCount; i++)
             {
               if (excel.IsRowEmpty(i)) 
               {
-                emptyRowsCount++;                
-                if(emptyRowsCount == 5) 
+                emptyRowsCount++;
+
+                rtxtWarnings.AppendText("El renglón número: " + i.ToString() + " se encentra en blanco \n");
+
+                if (emptyRowsCount == 5) 
                 {
                   break;
                 }
               } else
               {
                 emptyRowsCount = 0;
+                
                 List<Field> row = excel.getFields(i);
+               
                 foreach (Field field in row)
                 {
-                  field.AddField();
+                  field.AddField();                  
                 }
+
+                rowsAddedCount++;
+                rtxtNotifications.Text = "Se agregó correctamente el renglón número: " + i.ToString() +
+                                    "\n" + "\n" +
+                                    rowsAddedCount.ToString() + " Renglones agregados...";
+                
+                
               }               
 
             }
