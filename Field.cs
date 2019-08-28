@@ -8,10 +8,10 @@ namespace Excell
     
     class Field
     {
-        string UID = "";
-        string ObjectType = "";
-        string FieldKey = "";
-        string FieldValue = "";
+        public string UID = "";
+        public string ObjectType = "";
+        public string FieldKey = "";
+        public string FieldValue = "";
 
         public Field(string UID, string objectType, string fieldKey, string fieldValue)
         {

@@ -72,24 +72,33 @@ namespace Excell
         public void LoadFields(int sheetNumber, int columns)
         {
             excel.LoadWorkSheet(sheetNumber);
+                       
+           int emptyRowsCount = 0;
 
-            int count = columns; // excel.RowsCount;
-
-            for (int i = 0; i < count; i++)
+            for (int i = 2; i < excel.rowsCount; i++)
             {
-                List<Field> headers = excel.getFields(i + 2);
-
-                foreach (Field field in headers)
+              if (excel.IsRowEmpty(i)) 
+              {
+                emptyRowsCount++;                
+                if(emptyRowsCount == 5) 
                 {
-                    field.AddField();
+                  break;
                 }
+              } else
+              {
+                emptyRowsCount = 0;
+                List<Field> row = excel.getFields(i);
+                foreach (Field field in row)
+                {
+                  field.AddField();
+                }
+              }               
 
             }
             
-            //excel.Release();
+            excel.Release();
 
-            MessageBox.Show("Se agregó la tabla");
-        
+            MessageBox.Show("Se agregó la tabla");        
         }
 
    

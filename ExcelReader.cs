@@ -13,6 +13,7 @@ namespace Excell
         private Workbook xlWorkbook;
         private Worksheet xlWorksheet;
         private Range usedRange;
+        public int rowsCount;
 
         List<string> headers = new List<string>();
 
@@ -41,6 +42,20 @@ namespace Excell
           return getRow(1);
         }
 
+        public bool IsRowEmpty(int rowNumber)
+        {
+
+          List<string> row = getRow(rowNumber);
+
+          if(row.Count != 0)
+          {
+            return false;
+          } else {
+            return true;
+          }
+
+        }
+
         public ExcelReader(string filePath)
         {
            this.xlWorkbook = xlApp.Workbooks.Open(filePath);          
@@ -49,7 +64,8 @@ namespace Excell
         public void LoadWorkSheet(int workSheetNumber)
         {
           this.xlWorksheet = xlWorkbook.Sheets[workSheetNumber];
-          usedRange = this.xlWorksheet.UsedRange;
+          this.usedRange = this.xlWorksheet.UsedRange;
+          this.rowsCount = this.usedRange.Rows.Count;
 
           headers = getHeaders();
         }
@@ -71,7 +87,7 @@ namespace Excell
         public List<Field> getFields(int row)
         {
             List<Field> list = new List<Field>();
-                       
+                         
             for (int i = 2; i < headers.Count; i++)
             {
                 if (usedRange.Cells[row, i + 1] != null && usedRange.Cells[row, i + 1].Value2 != null)
