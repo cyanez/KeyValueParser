@@ -34,6 +34,19 @@ namespace Excell
             
         }
 
+        public List<string> GetWorkSheetsNames() {
+
+          List<string> workSheetsNames = new List<string>();
+          
+          for(int i = 1; i <= this.xlWorkbook.Worksheets.Count; i++) {
+
+            Worksheet currentWorkSheet = this.xlWorkbook.Worksheets[i];
+            workSheetsNames.Add(currentWorkSheet.Name);
+
+          }
+            
+          return workSheetsNames;
+        }
         
 
         private List<string> getRow(int rowNumber)
