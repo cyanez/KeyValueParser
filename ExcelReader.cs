@@ -84,16 +84,16 @@ namespace Excell
           return workSheetsNames;
         }        
            
-        public List<Field> getFields(int row)
+        public List<Field> getRowFields(int row)
         {
             List<Field> list = new List<Field>();
                          
             for (int i = 2; i < headers.Count; i++)
-            {
+            { 
                 if (usedRange.Cells[row, i + 1] != null && usedRange.Cells[row, i + 1].Value2 != null)
                 {
-                    Field field = new Field(usedRange.Cells[row, 1].Value2.ToString(),
-                                            usedRange.Cells[row, 2].Value2.ToString(),
+                    Field field = new Field(usedRange.Cells[row, 1].Value2 != null ? usedRange.Cells[row, 1].Value2.ToString() : "" , 
+                                            usedRange.Cells[row, 2].Value2 != null ? usedRange.Cells[row, 2].Value2.ToString() : "",
                                             headers[i],
                                             usedRange.Cells[row, i + 1].Value2.ToString());
                     list.Add(field);

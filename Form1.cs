@@ -69,6 +69,22 @@ namespace Excell
 
         }
 
+        private bool isValidRow(List<Field> row, int rowNumber) 
+        {
+           if(row[0].UID == string.Empty)  
+           {
+              rtxtWarnings.AppendText("Warning: " + "El campo UID se encuentra en blanco del renglón número: " + rowNumber.ToString() + " \n");
+              return false;
+           } else if(row[0].ObjectType == string.Empty)
+           {
+              rtxtWarnings.AppendText("Warning: " + "El campo ObjectType se encuentra del renglón número: " + rowNumber.ToString() + " \n");
+              return false;
+           } else {
+              return true;
+           }
+          
+        }
+
         public void LoadFields(int sheetNumber, int columns)
         {
             excel.LoadWorkSheet(sheetNumber);
@@ -92,17 +108,22 @@ namespace Excell
               {
                 emptyRowsCount = 0;
                 
-                List<Field> row = excel.getFields(i);
-               
-                foreach (Field field in row)
+                List<Field> row = excel.getRowFields(i);
+                if (isValidRow(row, i))
                 {
-                  field.AddField();                  
-                }
+                  foreach (Field field in row)
+                  {
+                    field.AddField();                   
+                  }
 
-                rowsAddedCount++;
-                rtxtNotifications.Text = "Se agregó correctamente el renglón número: " + i.ToString() +
+                  rowsAddedCount++;
+                  rtxtNotifications.Text = "Se agregó correctamente el renglón número: " + i.ToString() +
                                     "\n" + "\n" +
                                     rowsAddedCount.ToString() + " Renglones agregados...";
+
+                }
+                
+                
                 
                 
               }               
