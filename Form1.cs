@@ -14,13 +14,13 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 namespace Excell
 {
-    public partial class Form1 : Form
+    public partial class frmParser : Form
     {
         string filePath = string.Empty;
 
         ExcelReader excel;
 
-        public Form1()
+        public frmParser()
         {
             InitializeComponent();
         }
@@ -62,7 +62,7 @@ namespace Excell
               {
                 int workSheetSelectedNumber = GetSelectedWorkSheet();
 
-                LoadFields(workSheetSelectedNumber, 2);        
+                LoadFields(workSheetSelectedNumber);        
               }  else {
                 MessageBox.Show("Es necesario seleccionar el archivo excel para procesarlo!!! ");
               }     
@@ -85,7 +85,8 @@ namespace Excell
           
         }
 
-        public void LoadFields(int sheetNumber, int columns)
+        
+        public void LoadFields(int sheetNumber)
         {
             excel.LoadWorkSheet(sheetNumber);
                        
@@ -121,20 +122,17 @@ namespace Excell
                                     "\n" + "\n" +
                                     rowsAddedCount.ToString() + " Renglones agregados...";
 
-                }
-                
-                
-                
+                }            
                 
               }               
 
-            }
+            }           
             
-            excel.Release();
-
             MessageBox.Show("Se agregó la tabla");        
         }
 
-   
+        private void FrmParser_FormClosed(object sender, FormClosedEventArgs e) {
+          excel.Release();
+        }
   }
 }
