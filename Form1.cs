@@ -16,8 +16,10 @@ namespace Excell
 {
     public partial class Form1 : Form
     {
-    string filePath = string.Empty;    
-    
+        string filePath = string.Empty;
+
+        ExcelReader excel;
+
         public Form1()
         {
             InitializeComponent();
@@ -31,27 +33,45 @@ namespace Excell
             openExcelFileDialog.InitialDirectory = @"c:\";
             openExcelFileDialog.Filter = "Excel files |*.xlsx;*,xlsx";
 
-            if (openExcelFileDialog.ShowDialog() == DialogResult.OK) {
+            if (openExcelFileDialog.ShowDialog() == DialogResult.OK)
+            {
               filePath = openExcelFileDialog.FileName;
+
+              FillcbxWorkSheets();
             }
 
           }
 
         }
 
+        private void FillcbxWorkSheets()
+        {
+           excel = new ExcelReader(this.filePath);
+           List<string> workSheetsNames = excel.GetWorkSheetsNames();
+           cbxWorkSheets.DataSource = workSheetsNames;
+        }
+
+        private int GetSelectedWorkSheet() 
+        {
+          return cbxWorkSheets.SelectedIndex + 1;
+        }
+
         private void Button1_Click(object sender, EventArgs e)
             {
-              if (filePath != string.Empty) {
-                LoadFields(filePath, 2, 2);
+              if (filePath != string.Empty)
+              {
+                int workSheetSelectedNumber = GetSelectedWorkSheet();
+
+                LoadFields(workSheetSelectedNumber, 2);        
               }  else {
                 MessageBox.Show("Es necesario seleccionar el archivo excel para procesarlo!!! ");
               }     
 
         }
 
-        public void LoadFields(string fileName, int sheetNumber, int columns)
+        public void LoadFields(int sheetNumber, int columns)
         {
-            ExcelReader excel = new ExcelReader(fileName, sheetNumber);
+            excel.LoadWorkSheet(sheetNumber);
 
             int count = columns; // excel.RowsCount;
 
@@ -66,14 +86,12 @@ namespace Excell
 
             }
             
-            excel.Release();
+            //excel.Release();
 
             MessageBox.Show("Se agregó la tabla");
         
         }
 
    
-
-
   }
 }

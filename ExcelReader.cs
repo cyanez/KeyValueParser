@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using System.Text;
-using System.Threading.Tasks;
-
 
 using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
@@ -12,26 +9,49 @@ namespace Excell
 {
     class ExcelReader
     {
-        string filePath = "";
-
-        Application xlApp = new Application();
-        Workbook xlWorkbook;
-        Worksheet xlWorksheet;
-        Range usedRange;
+        private Application xlApp = new Application();
+        private Workbook xlWorkbook;
+        private Worksheet xlWorksheet;
+        private Range usedRange;
 
         List<string> headers = new List<string>();
-       
 
-        public ExcelReader(string filePath, int sheetNumber)
+        private List<string> getRow(int rowNumber) 
         {
-            this.filePath = filePath;
+          List<string> row = new List<string>();
 
-            this.xlWorkbook = xlApp.Workbooks.Open(this.filePath);
-            this.xlWorksheet = xlWorkbook.Sheets[sheetNumber];
-            usedRange = this.xlWorksheet.UsedRange;
+          if (rowNumber > 0) 
+          {
+          
+            for (int i = 1; i <= usedRange.Columns.Count; i++)
+            {
+              if (usedRange.Cells[rowNumber, i] != null && usedRange.Cells[rowNumber, i].Value2 != null)
+              {
+                row.Add(usedRange.Cells[rowNumber, i].Value2.ToString());
+              }
+            }
 
-            headers = getHeaders();
-            
+          }
+
+          return row;
+        }
+
+        private List<string> getHeaders() 
+        {
+          return getRow(1);
+        }
+
+        public ExcelReader(string filePath)
+        {
+           this.xlWorkbook = xlApp.Workbooks.Open(filePath);          
+        }
+
+        public void LoadWorkSheet(int workSheetNumber)
+        {
+          this.xlWorksheet = xlWorkbook.Sheets[workSheetNumber];
+          usedRange = this.xlWorksheet.UsedRange;
+
+          headers = getHeaders();
         }
 
         public List<string> GetWorkSheetsNames() {
@@ -46,44 +66,12 @@ namespace Excell
           }
             
           return workSheetsNames;
-        }
-        
-
-        private List<string> getRow(int rowNumber)
-        {
-            List<string> row = new List<string>();
-
-            if (rowNumber > 0)
-            {
-                
-                int colCount = usedRange.Columns.Count;
-
-                for (int i = 1; i <= colCount; i++)
-                {
-                    if (usedRange.Cells[rowNumber, i] != null && usedRange.Cells[rowNumber, i].Value2 != null)
-                    {
-                        row.Add(usedRange.Cells[rowNumber, i].Value2.ToString());
-                    }
-
-                }
-
-            }
-
-            return row;
-
-        }
-               
-
-        private List<string> getHeaders()
-        {
-            return getRow(1);
-        }
+        }        
            
         public List<Field> getFields(int row)
         {
             List<Field> list = new List<Field>();
-           
-            
+                       
             for (int i = 2; i < headers.Count; i++)
             {
                 if (usedRange.Cells[row, i + 1] != null && usedRange.Cells[row, i + 1].Value2 != null)
@@ -95,23 +83,19 @@ namespace Excell
                     list.Add(field);
                 }
 
-
             }
 
-            return list;
-            
+            return list;            
         }
 
-        private void CleanMemory() {
-
+        private void CleanMemory() 
+        { 
           GC.Collect();
           GC.WaitForPendingFinalizers();
-
         }
         
         public void Release()
         {
-
             CleanMemory();
                        
             Marshal.ReleaseComObject(usedRange);
@@ -122,7 +106,6 @@ namespace Excell
                       
             xlApp.Quit();
             Marshal.ReleaseComObject(xlApp);
-
         }
 
     }
