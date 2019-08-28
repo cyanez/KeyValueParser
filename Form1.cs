@@ -24,30 +24,33 @@ namespace Excell
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            Load(@"F:\Mapeo1.xlsx", 2, 2);
+            LoadFields(@"F:\Mapeo1.xlsx", 2, 2);
 
           
 
         }
-        
-        public  void Load(string fileName, int sheetNumber, int columns)
+
+        public void LoadFields(string fileName, int sheetNumber, int columns)
         {
             ExcelReader excel = new ExcelReader(fileName, sheetNumber);
 
             int count = columns; // excel.RowsCount;
-            
+
             for (int i = 0; i < count; i++)
-            {               
+            {
                 List<Field> headers = excel.getFields(i + 2);
-                               
+
                 foreach (Field field in headers)
-                {                    
-                    field.AddField();                   
+                {
+                    field.AddField();
                 }
-               
+
             }
+            
+            excel.Release();
 
             MessageBox.Show("Se agregó la tabla");
+        
         }
 
     }

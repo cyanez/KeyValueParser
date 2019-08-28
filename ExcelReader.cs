@@ -17,6 +17,7 @@ namespace Excell
         Application xlApp = new Application();
         Workbook xlWorkbook;
         Worksheet xlWorksheet;
+        Range usedRange;
 
         List<string> headers = new List<string>();
        
@@ -27,22 +28,21 @@ namespace Excell
 
             this.xlWorkbook = xlApp.Workbooks.Open(this.filePath);
             this.xlWorksheet = xlWorkbook.Sheets[sheetNumber];
+            usedRange = this.xlWorksheet.UsedRange;
 
             headers = getHeaders();
+            
         }
 
-        public Range getUsedRange()
-        {
-            return this.xlWorksheet.UsedRange;
-        }
+        
 
-        public List<string> getRow(int rowNumber)
+        private List<string> getRow(int rowNumber)
         {
             List<string> row = new List<string>();
 
             if (rowNumber > 0)
             {
-                Range usedRange = getUsedRange();
+                
                 int colCount = usedRange.Columns.Count;
 
                 for (int i = 1; i <= colCount; i++)
@@ -70,8 +70,7 @@ namespace Excell
         {
             List<Field> list = new List<Field>();
            
-            Range usedRange = getUsedRange();
-
+            
             for (int i = 2; i < headers.Count; i++)
             {
                 if (usedRange.Cells[row, i + 1] != null && usedRange.Cells[row, i + 1].Value2 != null)
@@ -88,6 +87,29 @@ namespace Excell
 
             return list;
             
+        }
+
+        private void CleanMemory() {
+
+          GC.Collect();
+          GC.WaitForPendingFinalizers();
+
+        }
+        
+        public void Release()
+        {
+
+            CleanMemory();
+                       
+            Marshal.ReleaseComObject(usedRange);
+            Marshal.ReleaseComObject(xlWorksheet);
+                       
+            xlWorkbook.Close();
+            Marshal.ReleaseComObject(xlWorkbook);
+                      
+            xlApp.Quit();
+            Marshal.ReleaseComObject(xlApp);
+
         }
 
     }
