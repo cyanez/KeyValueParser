@@ -16,17 +16,36 @@ namespace Excell
 {
     public partial class Form1 : Form
     {
+    string filePath = string.Empty;    
+    
         public Form1()
         {
             InitializeComponent();
         }
-               
+
+        private void BtnOpenExcelFile_Click(object sender, EventArgs e) {
+
+          using (OpenFileDialog openExcelFileDialog = new OpenFileDialog()) {
+
+            openExcelFileDialog.Title = "Seleccionar archivo Excel";
+            openExcelFileDialog.InitialDirectory = @"c:\";
+            openExcelFileDialog.Filter = "Excel files |*.xlsx;*,xlsx";
+
+            if (openExcelFileDialog.ShowDialog() == DialogResult.OK) {
+              filePath = openExcelFileDialog.FileName;
+            }
+
+          }
+
+        }
 
         private void Button1_Click(object sender, EventArgs e)
-        {
-            LoadFields(@"F:\Mapeo1.xlsx", 2, 2);
-
-          
+            {
+              if (filePath != string.Empty) {
+                LoadFields(filePath, 2, 2);
+              }  else {
+                MessageBox.Show("Es necesario seleccionar el archivo excel para procesarlo!!! ");
+              }     
 
         }
 
@@ -53,5 +72,8 @@ namespace Excell
         
         }
 
-    }
+   
+
+
+  }
 }
